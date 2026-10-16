@@ -3,3 +3,4 @@ credentials.json
 .clasp.json
 .claude/settings.local.json
 .DS_Store
+.env.notion

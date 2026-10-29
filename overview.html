@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>ブログ記事自動生成 説明図</title>
+<style>
+  /* 依頼主に説明する図。1600×1120 の1枚を、横向き A4 の PDF にする */
+  :root {
+    --bg: #f3f5f8;
+    --card: #ffffff;
+    --fg: #1d2633;
+    --muted: #5d6878;
+    --rule: #d6dce4;
+    --google: #e8873a;
+    --google-soft: #fdf3ea;
+    --us: #7a8494;
+    --us-soft: #f1f2f5;
+    --pc: #2f64a8;
+    --pc-soft: #edf3fb;
+    --wp: #5d6878;
+    --wp-soft: #f6f7f9;
+    --make: #3f8a3c;
+    --send: #2f64a8;
+    --gate: #b42318;
+    --font: "Hiragino Sans", "Hiragino Kaku Gothic ProN", "Noto Sans JP", "Yu Gothic", sans-serif;
+  }
+  @page { size: A4 landscape; margin: 0; }
+  * { box-sizing: border-box; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { margin: 0; background: var(--bg); }
+  body { font-family: var(--font); color: var(--fg); }
+  .canvas { position: relative; width: 1600px; height: 1120px; margin: 0 auto; background: var(--bg); }
+  .abs { position: absolute; }
+  @media print {
+    .canvas { zoom: .70; }
+  }
+
+  header { left: 40px; top: 28px; right: 40px; }
+  header h1 { margin: 0; font-size: 34px; font-weight: 800; letter-spacing: .02em; }
+  header p { margin: 6px 0 0; font-size: 16px; color: var(--muted); }
+
+  .zone { border: 3px solid; padding: 12px 18px; }
+  .zone .label { font-size: 17px; font-weight: 800; }
+  .zone .label small { font-weight: 500; font-size: 14px; color: var(--muted); margin-left: 8px; }
+  .pc { border-color: var(--pc); background: var(--pc-soft); }
+  .pc .label { color: var(--pc); }
+  .google { border-color: var(--google); background: var(--google-soft); border-width: 4px; }
+  .google .label { color: #b85e17; }
+  .us { border-color: var(--us); background: var(--us-soft); border-style: dashed; }
+  .us .label { color: #4b5463; }
+  .wp { border-color: var(--wp); background: var(--wp-soft); }
+  .wp .label { color: #3d4757; }
+
+  .box { background: var(--card); border: 2px solid var(--rule); padding: 14px 16px; display: grid; align-content: start; gap: 4px; }
+  .box h2 { margin: 0; font-size: 21px; font-weight: 800; }
+  .box p { margin: 0; font-size: 13.5px; color: var(--muted); line-height: 1.55; }
+  .box p b { color: var(--fg); font-weight: 700; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+  .chip { font-size: 13px; padding: 3px 9px; background: var(--google-soft); border: 1px solid #f1c9a5; color: #8a4a12; }
+  .gate { font-size: 13px; font-weight: 700; color: #fff; background: var(--gate); padding: 4px 10px; justify-self: start; margin-top: 6px; }
+
+  .step { font-size: 13.5px; font-weight: 700; line-height: 1.45; white-space: nowrap; background: #fff; border: 1px solid currentColor; padding: 1px 6px; }
+  .step.s { color: var(--make); }
+  .step.i { color: var(--send); }
+
+  .legend { right: 40px; top: 40px; display: flex; gap: 18px; font-size: 14px; color: var(--muted); align-items: center; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .legend i { display: inline-block; width: 28px; height: 4px; }
+
+  .safety { left: 40px; right: 40px; top: 800px; height: 290px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .safety h3 { margin: 0 0 4px; font-size: 15px; letter-spacing: .08em; color: var(--muted); grid-column: 1 / -1; }
+  .card { background: var(--card); border-top: 5px solid; padding: 16px 18px; display: grid; align-content: start; gap: 8px; }
+  .card h4 { margin: 0; font-size: 19px; font-weight: 800; }
+  .card ul { margin: 0; padding-left: 1.1em; display: grid; gap: 6px; font-size: 13.5px; line-height: 1.6; color: #2c3644; }
+  .card ul small { color: var(--muted); font-size: 13px; }
+  .card.gatec { border-color: var(--gate); }
+  .card.googlec { border-color: var(--google); }
+  .card.usc { border-color: var(--us); }
+</style>
+</head>
+<body>
+<div class="canvas">
+
+  <header class="abs">
+    <h1>ブログ記事自動生成 のしくみと安全の境界</h1>
+    <p>GAS + AI ブログ記事自動生成　しくみと安全の説明 ／ キーワードから AI が下書きを書き、WordPress に下書きのまま保存します</p>
+  </header>
+  <div class="abs legend">
+    <span><i style="background:var(--make)"></i>記事を作るまで（①〜④）</span>
+    <span><i style="background:var(--send)"></i>下書き保存と公開（Ⓐ〜Ⓓ）</span>
+  </div>
+
+  <!-- 区域 -->
+  <div class="abs zone pc" style="left:40px; top:140px; width:270px; height:620px;">
+    <div class="label">パソコン<small>ご担当者</small></div>
+  </div>
+  <div class="abs zone google" style="left:340px; top:140px; width:640px; height:620px;">
+    <div class="label">Google<small>記事の材料と下書きは、ここに置く</small></div>
+  </div>
+  <div class="abs zone us" style="left:1010px; top:140px; width:550px; height:280px;">
+    <div class="label">海外・米国<small>下書きを書くだけ</small></div>
+  </div>
+  <div class="abs zone wp" style="left:1010px; top:450px; width:550px; height:310px;">
+    <div class="label">いまの WordPress<small>自社のブログ</small></div>
+  </div>
+
+  <!-- 箱 -->
+  <div class="abs box" style="left:60px; top:200px; width:230px; height:190px;">
+    <h2>ご担当者</h2>
+    <p>いつものスプレッドシートにキーワードを入れ、1行選んでメニューを押す</p>
+    <p>シートで中身を見てから、下書き保存を押す</p>
+  </div>
+  <div class="abs box" style="left:60px; top:520px; width:230px; height:190px;">
+    <h2>公開の判断</h2>
+    <p>WordPress の画面で下書きを開き、10 分ほど手を入れて仕上げる</p>
+    <p>似た文章・法令・料金の数字を確かめてから公開する</p>
+  </div>
+
+  <div class="abs box" style="left:362px; top:196px; width:596px; height:210px;">
+    <h2>スプレッドシート</h2>
+    <p>キーワードの管理表をそのまま使う。1行が記事1本。状態と URL もここで分かる</p>
+    <div class="chips">
+      <span class="chip">キーワード</span>
+      <span class="chip">検索意図</span>
+      <span class="chip">タイトル・本文</span>
+      <span class="chip">状態</span>
+      <span class="chip">WordPress の URL</span>
+      <span class="chip">公開前チェック</span>
+    </div>
+    <div class="gate">Google アカウントを確認：共有した人だけ開ける</div>
+  </div>
+  <div class="abs box" style="left:362px; top:500px; width:596px; height:236px;">
+    <h2>記事を作る係</h2>
+    <p><b>Google Apps Script</b>（スプレッドシートについている小さなプログラム）。別のサーバーは使わない</p>
+    <p>AI に書かせる・シートに書き込む・WordPress に送る、を1行ずつ順に行う</p>
+    <p>鍵（API キー＝外のサービスを使うための合言葉）は、<b>スクリプト プロパティ</b>（プログラムだけが読める置き場）に置く。シートのセルには書かない</p>
+  </div>
+
+  <div class="abs box" style="left:1030px; top:196px; width:510px; height:200px;">
+    <h2>下書きを書く AI</h2>
+    <p><b>Claude API</b>（Anthropic 社の AI を、外から呼び出す窓口）。キーワードと文体の見本を読んで、2,000〜3,000 文字の下書きを書く</p>
+    <p>オリジナルの表現で書くよう指示している。60〜70 点の下書きをめざし、仕上げは人が行う</p>
+  </div>
+
+  <div class="abs box" style="left:1030px; top:506px; width:510px; height:214px;">
+    <h2>ブログの下書き</h2>
+    <p><b>WordPress REST API</b>（プログラムから WordPress に記事を入れる窓口）。届いた記事は、<b>下書き</b>として入る</p>
+    <p>見本サイトのアドレスが設定されているときは、送らずに止まる</p>
+    <div class="gate">アプリ用パスワードを確認</div>
+  </div>
+
+  <!-- 矢印 -->
+  <svg class="abs" style="left:0; top:0;" width="1600" height="1120" viewBox="0 0 1600 1120" aria-hidden="true">
+    <defs>
+      <marker id="hs" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#3f8a3c"/></marker>
+      <marker id="hi" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" fill="#2f64a8"/></marker>
+    </defs>
+    <g fill="none" stroke-width="4">
+      <!-- ① ご担当者 → シート -->
+      <path d="M290,250 H358" stroke="#3f8a3c" marker-end="url(#hs)"/>
+      <!-- ② シート → 記事を作る係 -->
+      <path d="M480,406 V496" stroke="#3f8a3c" marker-end="url(#hs)"/>
+      <!-- ③ 記事を作る係 ⇄ AI -->
+      <path d="M958,540 H994 V300 H1026" stroke="#3f8a3c" marker-start="url(#hs)" marker-end="url(#hs)"/>
+      <!-- ④ 記事を作る係 → シート -->
+      <path d="M640,500 V410" stroke="#3f8a3c" marker-end="url(#hs)"/>
+      <!-- Ⓐ ご担当者 → シート（下書き保存を押す） -->
+      <path d="M290,340 H358" stroke="#2f64a8" stroke-dasharray="10 6" marker-end="url(#hi)"/>
+      <!-- Ⓑ 記事を作る係 ⇄ WordPress -->
+      <path d="M958,640 H1026" stroke="#2f64a8" stroke-dasharray="10 6" marker-start="url(#hi)" marker-end="url(#hi)"/>
+      <!-- Ⓒ 記事を作る係 → シート（URL） -->
+      <path d="M840,500 V410" stroke="#2f64a8" stroke-dasharray="10 6" marker-end="url(#hi)"/>
+      <!-- Ⓓ 公開の判断 → WordPress -->
+      <path d="M290,690 H322 V746 H1180 V724" stroke="#2f64a8" stroke-dasharray="10 6" marker-end="url(#hi)"/>
+    </g>
+  </svg>
+
+  <!-- 矢印の説明 -->
+  <div class="abs step s" style="left:292px; top:222px;">① 実行</div>
+  <div class="abs step s" style="left:376px; top:440px;">② 選んだ行</div>
+  <div class="abs step s" style="left:1002px; top:424px;">③ AI に書かせる</div>
+  <div class="abs step s" style="left:536px; top:440px;">④ 下書きを<br>書き込む</div>
+  <div class="abs step i" style="left:292px; top:350px;">Ⓐ 保存</div>
+  <div class="abs step i" style="left:950px; top:650px;">Ⓑ 下書きで送る<br>／URL が返る</div>
+  <div class="abs step i" style="left:852px; top:440px;">Ⓒ URL と<br>状態を記入</div>
+  <div class="abs step i" style="left:620px; top:734px;">Ⓓ WordPress の画面で確かめて、人が公開する</div>
+
+  <!-- 安全の境界 -->
+  <section class="abs safety">
+    <h3>安全の境界</h3>
+    <div class="card gatec">
+      <h4>入口の確認</h4>
+      <ul>
+        <li>スプレッドシートと記事を作る係は、Google アカウントで、共有した人だけが使える</li>
+        <li>WordPress へは、アプリ用パスワード（WordPress が発行する接続専用の合言葉）を確かめてから入る。送るのは下書きだけで、公開の操作はしない</li>
+        <li>鍵は、スクリプト プロパティにだけ置く。シートにも画面にも出ない</li>
+      </ul>
+    </div>
+    <div class="card googlec">
+      <h4>データを置く場所</h4>
+      <ul>
+        <li>キーワード・本文・状態・URL は、いつもの Google スプレッドシートに置く</li>
+        <li>記事の下書きは、いまの WordPress に置く。公開は人が決める</li>
+        <li>新しいサーバーやデータベースは作らない<br><small>月々かかるのは AI の利用料（約 500〜1,000 円）だけ</small></li>
+      </ul>
+    </div>
+    <div class="card usc">
+      <h4>外に送るもの</h4>
+      <ul>
+        <li>米国の AI に送るのは、選んだ行のキーワード・サブキーワード・検索意図と、文体の見本・法令のメモだけ。書いてもらうために使い、保管場所にはしない</li>
+        <li>WordPress に送るのは、タイトル・本文・説明文だけ。状態は必ず「下書き」</li>
+        <li>シートのほかの行やメモ列は、どこにも送らない</li>
+      </ul>
+    </div>
+  </section>
+
+</div>
+</body>
+</html>

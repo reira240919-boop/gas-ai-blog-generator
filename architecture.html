@@ -1,0 +1,209 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>ブログ記事自動生成 全体図</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@500;700;900&family=Noto+Sans+JP:wght@400;500;700&display=swap">
+<style>
+  /* レイアウト: 白い板の上に2段の流れ図（上=記事を作る、下=WordPress に下書き保存）。下に補足 */
+  :root {
+    --bg: #eef1f4;
+    --card: #ffffff;
+    --fg: #1d2633;
+    --muted: #5d6878;
+    --rule: #d6dce4;
+    --make: #2f64a8;
+    --make-soft: #6a9bd8;
+    --send: #3f8a3c;
+    --send-soft: #7fb87b;
+    --store: #e8873a;
+    --store-soft: #f3ac6e;
+    --display: "Zen Kaku Gothic New", "Hiragino Sans", "Yu Gothic", sans-serif;
+    --body: "Noto Sans JP", "Hiragino Sans", "Yu Gothic", sans-serif;
+  }
+  @page { size: A4 landscape; margin: 0; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  html, body { margin: 0; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--body);
+    padding: 28px 16px 32px;
+  }
+  main { max-width: 1180px; margin: 0 auto; display: grid; gap: 16px; }
+  .board { background: var(--card); border-radius: 16px; padding: 24px 20px 12px; }
+  .scroll { overflow-x: auto; }
+  svg { display: block; width: 100%; min-width: 760px; height: auto; }
+  .caption { text-align: center; color: var(--muted); font-size: 15px; letter-spacing: .04em; margin: 0; }
+  .notes { max-width: 74ch; margin: 0 auto; color: var(--muted); font-size: 14px; line-height: 1.8; display: grid; gap: 4px; }
+  .notes p { margin: 0; }
+  .notes strong { color: var(--fg); font-weight: 700; }
+  @media print {
+    body { zoom: .80; padding: 14px 16px 0; min-height: 0; }
+  }
+
+  /* 図の中の文字と色 */
+  .h { font-family: var(--display); font-weight: 900; font-size: 26px; fill: var(--fg); }
+  .name { font-family: var(--display); font-weight: 700; font-size: 18px; fill: var(--fg); text-anchor: middle; }
+  .tech { font-family: var(--body); font-size: 13px; fill: var(--muted); text-anchor: middle; }
+  .tag { font-family: var(--body); font-size: 13px; font-weight: 500; text-anchor: middle; }
+  .paper { fill: var(--card); }
+  .make { color: var(--make); }
+  .send { color: var(--send); }
+  .store { color: var(--store); }
+  .arrow-m { stroke: var(--make-soft); stroke-width: 4; fill: none; }
+  .arrow-s { stroke: var(--send-soft); stroke-width: 4; fill: none; }
+  .head-m { fill: var(--make-soft); }
+  .head-s { fill: var(--send-soft); }
+  .link { stroke: var(--send); stroke-width: 4; fill: none; }
+  .on-color { fill: var(--card); }
+</style>
+</head>
+<body>
+<main>
+  <section class="board" aria-label="ブログ記事自動生成の全体図">
+    <div class="scroll">
+      <svg viewBox="0 0 1200 650" role="img" aria-labelledby="fig-title">
+        <title id="fig-title">記事を作る流れ（キーワードを入力 → 1行選んで実行 → AI が下書きを書く → シートに保存）と、WordPress に下書き保存する流れ（下書き保存を実行 → WordPress に下書きで送る → URL をシートに記入 → 人が確認して公開）</title>
+        <defs>
+          <marker id="mm" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path class="head-m" d="M0 0 L10 5 L0 10 z"/></marker>
+          <marker id="ms" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path class="head-s" d="M0 0 L10 5 L0 10 z"/></marker>
+          <marker id="ml" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path fill="var(--send)" d="M0 0 L10 5 L0 10 z"/></marker>
+
+          <!-- スプレッドシート（表） -->
+          <g id="i-sheet">
+            <rect x="-46" y="-40" width="92" height="80" rx="6" class="paper" stroke="currentColor" stroke-width="3"/>
+            <rect x="-46" y="-40" width="92" height="20" rx="6" fill="currentColor"/>
+            <rect x="-46" y="-26" width="92" height="6" fill="currentColor"/>
+            <path d="M-46 0 H46 M-46 20 H46 M-14 -20 V40 M18 -20 V40" stroke="currentColor" stroke-width="3"/>
+          </g>
+
+          <!-- 1行選んで、メニューから実行 -->
+          <g id="i-menu">
+            <rect x="-48" y="-40" width="80" height="74" rx="6" class="paper" stroke="currentColor" stroke-width="3"/>
+            <path d="M-38 -24 H22 M-38 -6 H22 M-38 12 H10" stroke="currentColor" stroke-width="3" stroke-linecap="round" opacity=".45"/>
+            <rect x="-42" y="-14" width="68" height="16" rx="3" fill="currentColor"/>
+            <path d="M14 4 L14 44 L24 34 L32 50 L40 46 L32 30 L46 30 Z" fill="currentColor" stroke="var(--card)" stroke-width="2.5" stroke-linejoin="round"/>
+          </g>
+
+          <!-- AI が下書きを書く -->
+          <g id="i-write">
+            <path d="M-38 -10 V-4 M-26 -10 V-4 M-14 -10 V-4 M-38 42 V48 M-26 42 V48 M-14 42 V48 M-54 8 H-48 M-54 20 H-48 M-54 32 H-48 M4 8 H10 M4 20 H10 M4 32 H10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+            <rect x="-48" y="-4" width="52" height="46" rx="7" fill="currentColor"/>
+            <text x="-22" y="26" class="on-color" font-size="18" font-weight="700" text-anchor="middle" font-family="var(--body)">AI</text>
+            <path d="M8 -48 H38 L52 -34 V10 H8 Z" class="paper" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M38 -48 V-34 H52" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/>
+            <path d="M16 -30 H32 M16 -20 H44 M16 -10 H44 M16 0 H36" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+          </g>
+
+          <!-- WordPress に下書きで送る -->
+          <g id="i-upload">
+            <rect x="-50" y="-40" width="100" height="70" rx="6" class="paper" stroke="currentColor" stroke-width="3"/>
+            <path d="M-50 -24 H50" stroke="currentColor" stroke-width="3"/>
+            <circle cx="-40" cy="-32" r="3" fill="currentColor"/>
+            <circle cx="-30" cy="-32" r="3" fill="currentColor"/>
+            <path d="M-38 -10 H0 M-38 2 H-6 M-38 14 H-12" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+            <rect x="6" y="-14" width="36" height="18" rx="3" fill="currentColor"/>
+            <text x="24" y="-1" class="on-color" font-size="11" font-weight="700" text-anchor="middle" font-family="var(--body)">下書き</text>
+            <path d="M24 46 V14 M14 24 L24 12 L34 24" fill="none" stroke="currentColor" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+
+          <!-- URL をシートに記入 -->
+          <g id="i-link">
+            <rect x="-46" y="-40" width="92" height="80" rx="6" class="paper" stroke="currentColor" stroke-width="3"/>
+            <rect x="-46" y="-40" width="92" height="20" rx="6" fill="currentColor"/>
+            <rect x="-46" y="-26" width="92" height="6" fill="currentColor"/>
+            <path d="M-46 0 H46 M-46 20 H46" stroke="currentColor" stroke-width="3"/>
+            <rect x="-38" y="4" width="76" height="12" rx="2" fill="currentColor" opacity=".35"/>
+            <text x="0" y="14" font-size="10" font-weight="700" text-anchor="middle" font-family="var(--body)" fill="currentColor">https://…</text>
+          </g>
+
+          <!-- 人が確認して公開 -->
+          <g id="i-check">
+            <circle cx="-14" cy="-22" r="16" fill="currentColor"/>
+            <path d="M-46 30 a32 32 0 0 1 64 0 V40 H-46 Z" fill="currentColor"/>
+            <circle cx="28" cy="10" r="22" class="paper" stroke="currentColor" stroke-width="3.5"/>
+            <path d="M17 10 L25 18 L40 2" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/>
+          </g>
+        </defs>
+
+        <!-- ===== 上の段：記事を作る ===== -->
+        <text x="20" y="44" class="h">記事を作る（シートに下書きをためる流れ）</text>
+
+        <g class="make">
+          <use href="#i-sheet" x="150" y="150"/>
+          <use href="#i-menu" x="450" y="150"/>
+          <use href="#i-write" x="750" y="150"/>
+        </g>
+        <use href="#i-sheet" x="1050" y="150" class="store"/>
+
+        <path class="arrow-m" d="M212 150 H370" marker-end="url(#mm)"/>
+        <path class="arrow-m" d="M512 150 H670" marker-end="url(#mm)"/>
+        <path class="arrow-m" d="M822 150 H980" marker-end="url(#mm)"/>
+
+        <text x="150" y="232" class="name">キーワードを入力</text>
+        <text x="150" y="256" class="tech">Google スプレッドシート</text>
+        <text x="150" y="275" class="tech">キーワード・サブキーワード・検索意図</text>
+
+        <text x="450" y="232" class="name">1行選んで実行</text>
+        <text x="450" y="256" class="tech">メニュー「記事生成」</text>
+        <text x="450" y="275" class="tech">1回に1本だけ作る</text>
+
+        <text x="750" y="232" class="name">AI が下書きを書く</text>
+        <text x="750" y="256" class="tech">Claude API ・ Google Apps Script</text>
+        <text x="750" y="275" class="tech">見本記事の文体で 2,000〜3,000 文字</text>
+
+        <text x="1050" y="232" class="name">シートに保存</text>
+        <text x="1050" y="256" class="tech">タイトル・本文・説明文・文字数</text>
+        <text x="1050" y="275" class="tech">状態「シート保存済み」</text>
+
+        <!-- シートにたまった記事を、下の段で送る -->
+        <path class="link" d="M1050 292 V340 H150 V404" marker-end="url(#ml)"/>
+        <text x="600" y="328" class="tag" fill="var(--send)">中身を見てから、WordPress に送る</text>
+
+        <!-- ===== 下の段：WordPress に下書き保存 ===== -->
+        <text x="190" y="390" class="h">下書き保存（WordPress に送る流れ）</text>
+
+        <g class="send">
+          <use href="#i-menu" x="150" y="470"/>
+          <use href="#i-upload" x="450" y="470"/>
+          <use href="#i-check" x="1050" y="470"/>
+        </g>
+        <use href="#i-link" x="750" y="470" class="store"/>
+
+        <path class="arrow-s" d="M212 470 H370" marker-end="url(#ms)"/>
+        <path class="arrow-s" d="M512 470 H670" marker-end="url(#ms)"/>
+        <path class="arrow-s" d="M812 470 H980" marker-end="url(#ms)"/>
+
+        <text x="150" y="552" class="name">下書き保存を実行</text>
+        <text x="150" y="576" class="tech">メニュー「記事生成」</text>
+        <text x="150" y="595" class="tech">シート保存済みの行だけ</text>
+
+        <text x="450" y="552" class="name">下書きで送る</text>
+        <text x="450" y="576" class="tech">WordPress REST API</text>
+        <text x="450" y="595" class="tech">自動で公開はしない</text>
+
+        <text x="750" y="552" class="name">URL をシートに記入</text>
+        <text x="750" y="576" class="tech">記事の URL を残す</text>
+        <text x="750" y="595" class="tech">状態「下書き保存済み」</text>
+
+        <text x="1050" y="552" class="name">確認して公開</text>
+        <text x="1050" y="576" class="tech">WordPress の画面で人が決める</text>
+        <text x="1050" y="595" class="tech">似た文章・法令・料金の数字を確認</text>
+      </svg>
+    </div>
+  </section>
+
+  <p class="caption">GAS + AI ブログ記事自動生成 全体図</p>
+
+  <div class="notes">
+    <p><strong>2つの操作：</strong>「記事を作る」と「下書き保存」は、メニューから別々に押します。シートで中身を見てから WordPress に送れます。</p>
+    <p><strong>自動で公開しない：</strong>WordPress には下書きとしてだけ保存します。公開するかどうかは、人が WordPress の画面で決めます。</p>
+    <p><strong>失敗したとき：</strong>状態が「失敗」になり、メモ列に理由が残ります。その行だけやり直せます。下書き保存済みの行は上書きしません。</p>
+    <p><strong>今回は入れないもの：</strong>画像の挿入、複数本の一括生成、コピペチェックの外部サービスとの自動連携。</p>
+  </div>
+</main>
+</body>
+</html>
